@@ -3,7 +3,8 @@
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { GraduationCap, Mail, Lock, AlertCircle, Eye, EyeOff } from 'lucide-react'
+import { Mail, Lock, AlertCircle, Eye, EyeOff } from 'lucide-react'
+import { Logo } from '@/components/logo'
 import { useAuth } from '@/lib/auth'
 import { cn } from '@/lib/utils'
 
@@ -51,13 +52,10 @@ function LoginContent() {
 
         {/* Logo */}
         <div className="text-center mb-8">
-          <Link href="/" className="inline-flex flex-col items-center gap-3">
-            <div className="w-14 h-14 bg-primary rounded-xl flex items-center justify-center">
-              <GraduationCap className="w-7 h-7 text-white" />
-            </div>
-            <span className="text-xl font-bold text-foreground">Eventus</span>
+          <Link href="/" className="inline-flex justify-center mb-3">
+            <Logo height={48} alwaysFull />
           </Link>
-          <p className="text-muted-foreground text-sm mt-2">Entre na sua conta para continuar</p>
+          <p className="text-muted-foreground text-sm">Entre na sua conta para continuar</p>
         </div>
 
         <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">

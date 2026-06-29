@@ -9,9 +9,11 @@ interface LogoProps {
   height?: number;
   /** Força o logo branco (para fundos sempre escuros, ex: footer) */
   forceLight?: boolean;
+  /** Sempre mostra a versão com nome, independente do tamanho de tela */
+  alwaysFull?: boolean;
 }
 
-export function Logo({ className = "", height = 36, forceLight = false }: LogoProps) {
+export function Logo({ className = "", height = 36, forceLight = false, alwaysFull = false }: LogoProps) {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -24,6 +26,20 @@ export function Logo({ className = "", height = 36, forceLight = false }: LogoPr
     : !mounted || resolvedTheme !== "dark"
     ? "dark"
     : "light";
+
+  if (alwaysFull) {
+    return (
+      <Image
+        src={`/eventus-logos/logo-eventus-name-${mode}-mode.svg`}
+        alt="Eventus"
+        width={height * 5}
+        height={height}
+        className={className}
+        priority
+        unoptimized
+      />
+    );
+  }
 
   return (
     <>
