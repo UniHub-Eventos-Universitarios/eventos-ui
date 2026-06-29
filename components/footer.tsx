@@ -22,7 +22,7 @@ export function Footer() {
           {/* Brand */}
           <div className="lg:col-span-2">
             <Link href="/" className="mb-5 inline-block">
-              <Logo height={30} forceLight />
+              <Logo height={40} forceLight />
             </Link>
             <p className="text-sm leading-relaxed text-[#71717A] max-w-xs">
               Plataforma oficial de eventos acadêmicos. Congressos, simpósios, workshops e palestras — tudo em um só lugar.

@@ -48,7 +48,7 @@ export function Navbar() {
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           {/* Logo */}
           <Link href="/" className="shrink-0 flex items-center">
-            <Logo height={32} />
+            <Logo height={40} />
           </Link>
 
           {/* Links desktop */}

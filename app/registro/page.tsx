@@ -66,7 +66,7 @@ function RegistroContent() {
 
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex justify-center mb-3">
-            <Logo height={48} alwaysFull />
+            <Logo height={96} alwaysFull />
           </Link>
           <p className="text-muted-foreground text-sm">Crie sua conta para participar dos eventos</p>
         </div>
