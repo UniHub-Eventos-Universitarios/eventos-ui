@@ -15,7 +15,7 @@ interface LogoProps {
 
 export function Logo({
   className = "",
-  height = 36,
+  height = 64,
   forceLight = false,
   alwaysFull = false,
 }: LogoProps) {
@@ -47,7 +47,7 @@ export function Logo({
         width={size}
         height={size}
         className={className}
-        style={{ width: "auto", height: size }}
+        style={{ width: "64px", height: size }}
         priority
         unoptimized
       />
