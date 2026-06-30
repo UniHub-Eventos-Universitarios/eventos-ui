@@ -13,34 +13,43 @@ interface LogoProps {
   alwaysFull?: boolean;
 }
 
-export function Logo({ className = "", height = 36, forceLight = false, alwaysFull = false }: LogoProps) {
+export function Logo({
+  className = "",
+  height = 36,
+  forceLight = false,
+  alwaysFull = false,
+}: LogoProps) {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
 
-  // Ícones (dark-mode.svg = colorido para fundo claro, light-mode.svg = branco para fundo escuro)
-  const iconMode = forceLight || (mounted && resolvedTheme === "dark") ? "light" : "dark";
+  const isDark = forceLight || (mounted && resolvedTheme === "dark");
 
-  // Logos com nome (dark-l-mode = branco para fundo escuro, light-l-mode = colorido para fundo claro)
-  const namedSrc = forceLight || (mounted && resolvedTheme === "dark")
+  // Ícones: light-mode = branco (fundo escuro), dark-mode = colorido (fundo claro)
+  const iconSrc = isDark
+    ? "/eventus-logos/logo-eventus-light-mode.svg"
+    : "/eventus-logos/logo-eventus-dark-mode.svg";
+
+  // Logos com nome: dark-l-mode = branco (fundo escuro), light-l-mode = colorido (fundo claro)
+  const namedSrc = isDark
     ? "/eventus-logos/logo-eventus-name-dark-l-mode.svg"
     : "/eventus-logos/logo-eventus-name-light-l-mode.svg";
 
   // Todos os SVGs têm viewBox quadrado (375×383 ≈ 1:1)
-  const w = Math.round(height * (375.12 / 383.04));
+  const size = height;
 
   if (alwaysFull) {
     return (
       <Image
         src={namedSrc}
         alt="Eventus"
-        width={w}
-        height={height}
+        width={size}
+        height={size}
         className={className}
+        style={{ width: "auto", height: size }}
         priority
         unoptimized
-        style={{ width: "auto", height: height }}
       />
     );
   }
@@ -49,10 +58,10 @@ export function Logo({ className = "", height = 36, forceLight = false, alwaysFu
     <>
       {/* Mobile: ícone sem nome */}
       <Image
-        src={`/eventus-logos/logo-eventus-${iconMode}-mode.svg`}
+        src={iconSrc}
         alt="Eventus"
-        width={height}
-        height={height}
+        width={size}
+        height={size}
         className={`block md:hidden ${className}`}
         priority
         unoptimized
@@ -61,12 +70,12 @@ export function Logo({ className = "", height = 36, forceLight = false, alwaysFu
       <Image
         src={namedSrc}
         alt="Eventus"
-        width={w}
-        height={height}
+        width={size}
+        height={size}
         className={`hidden md:block ${className}`}
+        style={{ width: "auto", height: size }}
         priority
         unoptimized
-        style={{ width: "auto", height: height }}
       />
     </>
   );

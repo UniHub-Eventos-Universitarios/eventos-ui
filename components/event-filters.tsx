@@ -29,7 +29,7 @@ export function EventFilters() {
   const pathname     = usePathname()
   const searchParams = useSearchParams()
   const [isPending, startTransition] = useTransition()
-  const [filtersOpen, setFiltersOpen] = useState(true)
+  const [filtersOpen, setFiltersOpen] = useState(false)
 
   const search   = searchParams.get('search')   ?? ''
   const category = searchParams.get('category') ?? ''

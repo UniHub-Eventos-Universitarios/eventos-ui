@@ -104,14 +104,14 @@
   --primary: #3B82F6;
   --primary-foreground: #FFFFFF;
 
-  --secondary: #1F2937;
-  --secondary-foreground: #F9FAFB;
+  --secondary: #27272A;
+  --secondary-foreground: #FAFAFA;
 
   --muted: #1A1A1A;
   --muted-foreground: #9CA3AF;
 
-  --accent: #1E293B;
-  --accent-foreground: #93C5FD;
+  --accent: #27272A;
+  --accent-foreground: #FAFAFA;
 
   --destructive: #F87171;
   --border: #27272A;

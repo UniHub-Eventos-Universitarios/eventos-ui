@@ -5,8 +5,7 @@ import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Save, AlertCircle, CheckCircle } from 'lucide-react'
 import { useAuth } from '@/lib/auth'
-import { updateEvento, getEventoById } from '@/lib/api'
-import type { BackendEvento } from '@/lib/api'
+import { updateEvento, getEventoById, getPalestrantes, type BackendEvento, type BackendPalestranteSimples } from '@/lib/api'
 import { cn } from '@/lib/utils'
 
 const CATEGORIAS = [
@@ -39,6 +38,7 @@ interface FormState {
   imagem_url: string
   tags: string
   destaque: boolean
+  palestrante_ids: number[]
 }
 
 const EMPTY: FormState = {
@@ -48,6 +48,7 @@ const EMPTY: FormState = {
   local_detalhe: '', mapa_url: '', capacidade: '100',
   organizador_nome: '', organizador_email: '',
   imagem_url: '', tags: '', destaque: false,
+  palestrante_ids: [],
 }
 
 function formFromEvento(ev: BackendEvento): FormState {
@@ -69,6 +70,7 @@ function formFromEvento(ev: BackendEvento): FormState {
     imagem_url:       ev.imagem_url ?? '',
     tags:             (ev.tags ?? []).join(', '),
     destaque:         ev.destaque ?? false,
+    palestrante_ids:  ev.palestrante_ids ?? [],
   }
 }
 
@@ -77,11 +79,12 @@ export default function EditarEventoPage() {
   const params = useParams<{ id: string }>()
   const { user, isAdmin, loading: authLoading } = useAuth()
 
-  const [form, setForm]           = useState<FormState>(EMPTY)
+  const [form, setForm]             = useState<FormState>(EMPTY)
   const [loadingData, setLoadingData] = useState(true)
-  const [saving, setSaving]       = useState(false)
-  const [error, setError]         = useState('')
-  const [success, setSuccess]     = useState(false)
+  const [saving, setSaving]         = useState(false)
+  const [error, setError]           = useState('')
+  const [success, setSuccess]       = useState(false)
+  const [palestrantes, setPalestrantes] = useState<BackendPalestranteSimples[]>([])
 
   useEffect(() => {
     if (!authLoading && (!user || !isAdmin)) {
@@ -92,14 +95,28 @@ export default function EditarEventoPage() {
   useEffect(() => {
     if (authLoading || !isAdmin || !params.id) return
     setLoadingData(true)
-    getEventoById(Number(params.id))
-      .then((ev) => { if (ev) setForm(formFromEvento(ev)) })
+    Promise.all([
+      getEventoById(Number(params.id)),
+      getPalestrantes(),
+    ])
+      .then(([ev, pals]) => {
+        if (ev) setForm(formFromEvento(ev))
+        setPalestrantes(pals)
+      })
       .catch(() => setError('Não foi possível carregar os dados do evento.'))
       .finally(() => setLoadingData(false))
   }, [authLoading, isAdmin, params.id])
 
   const set = (field: keyof FormState, value: string | boolean) =>
     setForm((prev) => ({ ...prev, [field]: value }))
+
+  const togglePalestrante = (id: number) =>
+    setForm((prev) => ({
+      ...prev,
+      palestrante_ids: prev.palestrante_ids.includes(id)
+        ? prev.palestrante_ids.filter((x) => x !== id)
+        : [...prev.palestrante_ids, id],
+    }))
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -130,6 +147,7 @@ export default function EditarEventoPage() {
         imagem_url:       form.imagem_url.trim() || undefined,
         tags:             form.tags ? form.tags.split(',').map((t) => t.trim()).filter(Boolean) as unknown as string[] : [],
         destaque:         form.destaque,
+        palestrante_ids:  form.palestrante_ids,
       })
       setSuccess(true)
       setTimeout(() => router.push('/admin/eventos'), 1500)
@@ -295,6 +313,28 @@ export default function EditarEventoPage() {
                     placeholder="organizador@uni.edu.br" className={inputCls} />
                 </Field>
               </div>
+            </Section>
+
+            {/* Palestrantes */}
+            <Section title="Palestrantes">
+              {palestrantes.length === 0 ? (
+                <p className="text-sm text-muted-foreground">Nenhum palestrante cadastrado. <a href="/admin/palestrantes" className="text-primary underline">Cadastre um palestrante</a> primeiro.</p>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-56 overflow-y-auto pr-1">
+                  {palestrantes.map((p) => (
+                    <label key={p.id} className={cn('flex items-center gap-3 px-3 py-2 rounded-lg border cursor-pointer transition-colors', form.palestrante_ids.includes(p.id) ? 'border-primary bg-primary/5' : 'border-border hover:bg-muted')}>
+                      <input type="checkbox" checked={form.palestrante_ids.includes(p.id)} onChange={() => togglePalestrante(p.id)} className="w-4 h-4 accent-primary" />
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium text-foreground truncate">{p.nome}</p>
+                        {p.area && <p className="text-xs text-muted-foreground truncate">{p.area}{p.instituicao ? ` — ${p.instituicao}` : ''}</p>}
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              )}
+              {form.palestrante_ids.length > 0 && (
+                <p className="text-xs text-primary mt-2">{form.palestrante_ids.length} palestrante{form.palestrante_ids.length !== 1 ? 's' : ''} selecionado{form.palestrante_ids.length !== 1 ? 's' : ''}</p>
+              )}
             </Section>
 
             {/* Extras */}

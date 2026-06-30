@@ -71,6 +71,7 @@ export interface BackendEvento {
   destaque: boolean
   inscritos: number
   vagas_restantes: number
+  palestrante_ids?: number[]
   palestrantes?: BackendPalestrante[]
   atividades?: BackendAtividade[]
   created_at: string
@@ -229,6 +230,18 @@ export async function updateEvento(id: number, data: Partial<BackendEvento>): Pr
 
 export async function deleteEvento(id: number): Promise<void> {
   return apiFetch(`/eventos/${id}`, { method: 'DELETE' })
+}
+
+export interface BackendPalestranteSimples {
+  id: number
+  nome: string
+  area: string | null
+  instituicao: string | null
+}
+
+export async function getPalestrantes(): Promise<BackendPalestranteSimples[]> {
+  const res = await apiFetch<{ data: BackendPalestranteSimples[] }>('/palestrantes?perPage=200')
+  return res.data
 }
 
 // ─── Auth ─────────────────────────────────────────────────────────────────────
