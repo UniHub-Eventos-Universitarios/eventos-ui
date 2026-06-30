@@ -93,10 +93,10 @@
 .dark {
   color-scheme: dark;
 
-  --background: #0A0A0A;
+  --background: #000000;
   --foreground: #FFFFFF;
 
-  --card: #18181B;
+  --card: #0F0F0F;
   --card-foreground: #FFFFFF;
   --popover: #18181B;
   --popover-foreground: #FFFFFF;
